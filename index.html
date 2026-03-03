@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Caro · Skibidi Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== TOÀN BỘ CSS (GIỮ NGUYÊN) ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0d0f1c;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .floating-xo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .xo-item {
+            position: absolute;
+            font-size: clamp(30px, 8vw, 120px);
+            font-weight: bold;
+            opacity: 0.15;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            animation: floatXO 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .xo-item.x { color: #ff7b7b; }
+        .xo-item.o { color: #7bc5ff; }
+
+        @keyframes floatXO {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0.3; }
+        }
+
+        .xo-item:nth-child(1) { left: 5%; animation-duration: 18s; animation-delay: 0s; }
+        .xo-item:nth-child(2) { left: 15%; animation-duration: 22s; animation-delay: 2s; }
+        .xo-item:nth-child(3) { left: 25%; animation-duration: 20s; animation-delay: 1s; }
+        .xo-item:nth-child(4) { left: 35%; animation-duration: 25s; animation-delay: 3s; }
+        .xo-item:nth-child(5) { left: 45%; animation-duration: 19s; animation-delay: 0.5s; }
+        .xo-item:nth-child(6) { left: 55%; animation-duration: 23s; animation-delay: 4s; }
+        .xo-item:nth-child(7) { left: 65%; animation-duration: 21s; animation-delay: 1.5s; }
+        .xo-item:nth-child(8) { left: 75%; animation-duration: 26s; animation-delay: 2.5s; }
+        .xo-item:nth-child(9) { left: 85%; animation-duration: 24s; animation-delay: 3.5s; }
+        .xo-item:nth-child(10) { left: 95%; animation-duration: 20s; animation-delay: 0.2s; }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, #1a1f3a, #0b0f1f, #040617);
+            background-size: 200% 200%;
+            animation: bgMove 20s ease infinite alternate;
+            z-index: -2;
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .glass-panel {
+            background: rgba(20, 25, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            border: 2px solid rgba(255, 215, 100, 0.3);
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.7), inset 0 0 30px rgba(255,255,200,0.1);
+            padding: 24px;
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1300px;
+            transition: 0.3s;
+            position: relative;
+            z-index: 100;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(145deg, #2f3763, #1a2350);
+            border: none;
+            color: #ffeac0;
+            font-size: 18px;
+            padding: 18px 36px;
+            border-radius: 60px;
+            box-shadow: 0 10px 0 #0f1428, 0 0 0 2px #ffd966;
+            cursor: pointer;
+            transition: 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .btn:hover {
+            background: #3f4b8a;
+            transform: translateY(-3px);
+            box-shadow: 0 13px 0 #0f1428, 0 0 0 3px gold;
+        }
+
+        .btn.small {
+            font-size: 14px;
+            padding: 12px 24px;
+        }
+
+        .btn.active {
+            background: #f5c542;
+            color: #1a1f2e;
+            box-shadow: 0 8px 0 #b17f2a;
+            transform: translateY(3px);
+        }
+
+        .nav-btn {
+            background: #3f4b8a;
+            padding: 12px 24px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .music-btn {
+            background: #2f3763;
+            border: 2px solid #ffd966;
+            color: #ffefb0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-left: 10px;
+        }
+
+        .music-btn:hover {
+            background: #4d58a0;
+            transform: scale(1.1);
+        }
+
+        .music-btn.muted {
+            background: #555;
+            color: #aaa;
+            border-color: #888;
+        }
+
+        #welcome-screen h1 {
+            font-size: 56px;
+            color: #ffd966;
+            text-shadow: 6px 6px 0 #aa6d2b, 0 0 30px #ffae42;
+            margin-bottom: 40px;
+            animation: glowPulse 3s infinite;
+            font-weight: 900;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 6px 6px 0 #aa6d2b, 0 0 30px #ffae42; }
+            50% { text-shadow: 6px 6px 0 #aa6d2b, 0 0 60px #ffd966; }
+        }
+
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .map-card {
+            background: rgba(30, 35, 60, 0.9);
+            border-radius: 30px;
+            padding: 20px;
+            border: 3px solid gold;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .map-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
+        }
+
+        .map-icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .level-btn {
+            background: #2f3763;
+            border: 2px solid #ffd966;
+            color: white;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .level-btn:hover {
+            background: #4d58a0;
+            transform: translateY(-3px);
+        }
+
+        .level-btn.completed {
+            background: #4caf50;
+            border-color: #fff;
+        }
+
+        .level-btn.locked {
+            background: #555;
+            border-color: #888;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .mode-row {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .avatar-container {
+            display: flex;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .avatar-box {
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 25px;
+            border: 2px solid #ffd966;
+            min-width: 300px;
+        }
+
+        .avatar-box h3 {
+            color: #ffe070;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .avatar-item {
+            width: 50px;
+            height: 50px;
+            background: #262d4e;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 3px solid #5c6bc0;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .avatar-item.selected {
+            border-color: #f5c542;
+            box-shadow: 0 0 20px gold;
+            transform: scale(1.1);
+        }
+
+        .name-input {
+            background: #1f253e;
+            border: 3px solid #4e5896;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+            outline: none;
+        }
+
+        #game-screen .game-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .players-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 30, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 60px;
+            border: 2px solid #ffd966;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .player-card {
+            background: linear-gradient(145deg, #1f2745, #151d38);
+            border-radius: 50px;
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 3px solid #ffd966;
+            box-shadow: 0 10px 0 #0a0f20, inset 0 -3px 0 #2f3b6b;
+            flex: 1;
+            max-width: 380px;
+        }
+
+        .player-avatar {
+            font-size: 64px;
+            background: #0b0f1e;
+            width: 100px;
+            height: 100px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #f5c542;
+        }
+
+        .player-timer {
+            font-size: 32px;
+            color: #ffefb0;
+            background: #1a2240;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 2px solid #f5c542;
+            display: inline-block;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+        }
+
+        .turn-indicator {
+            background: #f5c542;
+            color: #1a1f2e;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .center-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .board-wrapper {
+            background: #1a1f35;
+            border-radius: 40px;
+            padding: 20px;
+            border: 6px solid #4a5390;
+            box-shadow: 0 15px 0 #0a0f20;
+            display: inline-block;
+            max-width: 100%;
+            overflow: auto;
+            max-height: 70vh;
+        }
+
+        .board {
+            display: inline-grid;
+            gap: 3px;
+            background: #232842;
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+        .cell {
+            width: min(5vw, 60px);
+            height: min(5vw, 60px);
+            min-width: 30px;
+            min-height: 30px;
+            background: #2d3557;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: min(3vw, 36px);
+            font-weight: bold;
+            text-shadow: 2px 2px 0 #0d0f1f;
+            box-shadow: 0 0 0 2px #1b2140 inset, 0 4px 0 #141827;
+            cursor: pointer;
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .cell.W {
+            color: #fff;
+            text-shadow: 0 0 5px #aaa;
+            background: #4a4f7a;
+        }
+
+        .cell.pen-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,200,0.6) 0%, transparent 70%);
+            animation: penSketch 0.2s ease-out forwards;
+            pointer-events: none;
+            border-radius: 10px;
+        }
+
+        @keyframes penSketch {
+            0% { transform: scale(0); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .cell.X { color: #ff8a8a; text-shadow: 0 0 12px #ff3b3b; }
+        .cell.O { color: #8ab8ff; text-shadow: 0 0 12px #3f8aff; }
+        .cell.win-glow { background: #ffe570; box-shadow: 0 0 30px gold; }
+
+        .history-panel {
+            background: rgba(10, 15, 30, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 15px 25px;
+            border: 2px solid #ffd966;
+            width: 100%;
+            max-width: 800px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history-title {
+            font-size: 16px;
+            color: #f5c542;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .history-list {
+            list-style: none;
+            font-size: 12px;
+            line-height: 1.8;
+            color: #b1e5f7;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            justify-content: center;
+        }
+
+        .history-list li {
+            background: #1e2645;
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px solid #4e5a9e;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .game-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mute-btn, .music-btn {
+            background: #2f3763;
+            border: 2px solid #ffd966;
+            color: #ffefb0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mute-btn:hover, .music-btn:hover {
+            background: #4d58a0;
+            transform: scale(1.1);
+        }
+
+        .mute-btn.muted, .music-btn.muted {
+            background: #555;
+            color: #aaa;
+            border-color: #888;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .overlay-box {
+            background: #ffdd88;
+            padding: 40px 60px;
+            border-radius: 90px;
+            border: 12px solid #fff1b5;
+            box-shadow: 0 25px 0 #b3772e, 0 0 150px gold;
+            text-align: center;
+            color: #2d1f0c;
+            font-family: 'Orbitron', sans-serif;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .overlay-box.draw {
+            background: #aac9ff;
+            border-color: #d6e6ff;
+            box-shadow: 0 25px 0 #4f6f8f;
+        }
+
+        .overlay-box h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .overlay-box p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .overlay-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .overlay-btn {
+            background: #7d5d2a;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 60px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #3e2c15;
+            transition: 0.1s;
+            min-width: 150px;
+        }
+
+        .overlay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 0 #3e2c15;
+        }
+
+        .overlay-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #3e2c15;
+        }
+
+        .next-level-btn {
+            background: #4caf50;
+            box-shadow: 0 8px 0 #2d6a2d;
+        }
+
+        .achievements-panel {
+            background: rgba(10, 15, 30, 0.9);
+            border-radius: 30px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid gold;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #4e5a9e;
+        }
+
+        .achievement-icon {
+            font-size: 30px;
+        }
+
+        .achievement-name {
+            color: #ffd966;
+            font-size: 16px;
+        }
+
+        .achievement-desc {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .achievement-locked {
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10001;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="floating-xo">
+        <div class="xo-item x">X</div>
+        <div class="xo-item o">O</div>
+        <div class="xo-item x">X</div>
+        <div class="xo-item o">O</div>
+        <div class="xo-item x">X</div>
+        <div class="xo-item o">O</div>
+        <div class="xo-item x">X</div>
+        <div class="xo-item o">O</div>
+        <div class="xo-item x">X</div>
+        <div class="xo-item o">O</div>
+    </div>
+
+    <!-- MÀN HÌNH CHÀO (không có intro) -->
+    <div id="welcome-screen" class="screen">
+        <div class="glass-panel" style="text-align: center;">
+            <h1>BATTLE CARO</h1>
+            <p style="color: #ffd966; margin-top: -20px; margin-bottom: 30px;">Made by Skibidi Studio</p>
+            <button class="btn" id="startBtn">CHƠI NHANH</button>
+            <button class="btn" id="campaignBtn" style="margin-top: 20px;">🗺️ CHIẾN DỊCH</button>
+            <button class="btn" id="achievementsBtn" style="margin-top: 20px;">🏆 THÀNH TỰU</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CHỌN CHẾ ĐỘ (CHƠI NHANH) -->
+    <div id="mode-screen" class="screen hidden">
+        <div class="glass-panel" style="width: 900px; max-width: 95%;">
+            <h2 style="color: #ffd966; margin-bottom: 30px; font-size: 28px;">CHỌN CHẾ ĐỘ</h2>
+            <div class="mode-row">
+                <button class="btn small" id="modePVP">👥 VS NGƯỜI</button>
+                <button class="btn small" id="modePVAI">🤖 VS MÁY</button>
+            </div>
+            <div class="mode-row">
+                <button class="btn small" id="win3">3 (SÀN 3x3)</button>
+                <button class="btn small" id="win5">5 (15x15)</button>
+                <button class="btn small" id="win7">7 (21x21)</button>
+            </div>
+            <button class="btn" id="nextBtn" style="margin-top: 30px;">NEXT ➡️</button>
+            <button class="btn nav-btn" id="backFromModeBtn">⬅️ QUAY LẠI</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CHỌN AVATAR & TÊN -->
+    <div id="avatar-screen" class="screen hidden">
+        <div class="glass-panel" style="width: 1100px; max-width: 98%;">
+            <h2 style="color: #ffd966; margin-bottom: 20px; font-size: 28px;">CHỌN AVATAR & TÊN</h2>
+            <div class="avatar-container">
+                <div class="avatar-box" id="avatarXBox">
+                    <h3>👤 NGƯỜI CHƠI X</h3>
+                    <div class="avatar-grid" id="avatarXGrid"></div>
+                    <input type="text" class="name-input" id="nameX" placeholder="Tên X (tối đa 10 ký tự)" maxlength="10" value="X Player">
+                </div>
+                <div class="avatar-box" id="avatarOBox">
+                    <h3>👤 NGƯỜI CHƠI O</h3>
+                    <div class="avatar-grid" id="avatarOGrid"></div>
+                    <input type="text" class="name-input" id="nameO" placeholder="Tên O (tối đa 10 ký tự)" maxlength="10" value="O Player">
+                </div>
+            </div>
+            <button class="btn" id="fightBtn">⚔️ FIGHT ⚔️</button>
+            <button class="btn nav-btn" id="backFromAvatarBtn">⬅️ QUAY LẠI</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH THÀNH TỰU -->
+    <div id="achievements-screen" class="screen hidden">
+        <div class="glass-panel" style="width: 800px; max-width: 95%;">
+            <h2 style="color: #ffd966; margin-bottom: 30px; font-size: 28px;">🏆 THÀNH TỰU</h2>
+            <div class="achievements-panel" id="achievementsList"></div>
+            <button class="btn nav-btn" id="backFromAchievementsBtn">⬅️ QUAY LẠI</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CHIẾN DỊCH: CHỌN MAP -->
+    <div id="campaign-map-screen" class="screen hidden">
+        <div class="glass-panel" style="width: 1000px; max-width: 95%;">
+            <h2 style="color: #ffd966; margin-bottom: 30px; font-size: 28px;">🗺️ CHỌN MAP</h2>
+            <div class="campaign-grid" id="mapGrid"></div>
+            <button class="btn nav-btn" id="backFromCampaignBtn">⬅️ QUAY LẠI</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH CHIẾN DỊCH: CHỌN LEVEL -->
+    <div id="campaign-level-screen" class="screen hidden">
+        <div class="glass-panel" style="width: 1000px; max-width: 95%;">
+            <h2 style="color: #ffd966; margin-bottom: 30px; font-size: 28px;" id="mapNameDisplay">MAP</h2>
+            <div class="level-grid" id="levelGrid"></div>
+            <button class="btn nav-btn" id="backToMapBtn">⬅️ QUAY LẠI MAP</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH GAME (dùng chung) -->
+    <div id="game-screen" class="screen hidden">
+        <div class="game-layout">
+            <div class="players-row">
+                <div class="player-card" id="playerXCard">
+                    <div class="player-avatar" id="playerXAvatar">⚔️</div>
+                    <div class="player-info">
+                        <div class="player-name" id="playerXName">X Player</div>
+                        <div class="player-timer" id="playerXTimer">05:00</div>
+                        <div class="turn-indicator" id="turnXIndicator" style="display: none;">LƯỢT X</div>
+                    </div>
+                </div>
+                <div class="player-card" id="playerOCard">
+                    <div class="player-avatar" id="playerOAvatar">🧝</div>
+                    <div class="player-info">
+                        <div class="player-name" id="playerOName">O Player</div>
+                        <div class="player-timer" id="playerOTimer">05:00</div>
+                        <div class="turn-indicator" id="turnOIndicator" style="display: none;">LƯỢT O</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-area">
+                <div class="board-wrapper">
+                    <div class="board" id="board"></div>
+                </div>
+                <div class="history-panel">
+                    <div class="history-title">📜 LỊCH SỬ NƯỚC ĐI</div>
+                    <ul class="history-list" id="historyList">
+                        <li>⚔️ Bắt đầu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="game-footer">
+                <button class="btn small" id="resetGameBtn">⟲ CHƠI LẠI</button>
+                <button class="btn small" id="exitGameBtn">🚪 THOÁT</button>
+                <div class="mute-btn" id="muteBtn" title="Tắt/bật hiệu ứng">🔊</div>
+                <div class="music-btn" id="musicBtn" title="Tắt/bật nhạc nền">🎵</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay kết thúc -->
+    <div id="gameOverOverlay" class="overlay">
+        <div class="overlay-box" id="gameOverBox">
+            <h2 id="gameOverTitle">🏆 X CHIẾN THẮNG</h2>
+            <p id="gameOverQuote">"Bậc thầy chiến thuật!"</p>
+            <div class="overlay-buttons">
+                <button class="overlay-btn" id="overlayMenuBtn">VỀ MENU</button>
+                <button class="overlay-btn" id="overlayReplayBtn">CHƠI LẠI</button>
+                <button class="overlay-btn" id="overlayStayBtn">XEM LẠI</button>
+                <button class="overlay-btn next-level-btn" id="overlayNextBtn" style="display: none;">MÀN TIẾP THEO</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+        (function() {
+            // ==================== DỮ LIỆU MAP & LEVEL ====================
+            const maps = [
+                { id: 0, name: 'Rừng Rậm', icon: '🌳', colorX: '#ff8a8a', colorO: '#6b8e23' },
+                { id: 1, name: 'Băng Giá', icon: '❄️', colorX: '#a0d6ff', colorO: '#4682b4' },
+                { id: 2, name: 'Hỏa Diệm', icon: '🔥', colorX: '#ff4500', colorO: '#ff8c00' },
+                { id: 3, name: 'Huyền Bí', icon: '🔮', colorX: '#da70d6', colorO: '#9370db' },
+                { id: 4, name: 'Vũ Trụ', icon: '🌌', colorX: '#ffd700', colorO: '#c0c0c0' },
+                { id: 5, name: 'BOSS - Mê Cung', icon: '👾', colorX: '#ff00ff', colorO: '#00ffff' }
+            ];
+
+            const levelsData = [
+                // Map 0: Rừng Rậm
+                [
+                    { boardSize: 5, winCondition: 3, difficulty: 0, setup: [
+                        ['X', null, null, null, null],
+                        [null, 'X', null, null, null],
+                        [null, null, 'X', null, null],
+                        [null, null, null, 'O', null],
+                        [null, null, null, null, 'O']
+                    ] },
+                    { boardSize: 6, winCondition: 4, difficulty: 0, setup: [
+                        ['X', null, null, null, null, null],
+                        [null, 'X', null, null, null, null],
+                        [null, null, 'X', null, null, null],
+                        [null, null, null, 'X', null, null],
+                        [null, null, null, null, 'O', null],
+                        [null, null, null, null, null, 'O']
+                    ] },
+                    { boardSize: 7, winCondition: 4, difficulty: 1, setup: [
+                        ['X', null, null, null, null, null, null],
+                        [null, 'X', null, null, null, null, null],
+                        [null, null, 'X', null, null, null, null],
+                        [null, null, null, 'X', null, null, null],
+                        [null, null, null, null, 'O', null, null],
+                        [null, null, null, null, null, 'O', null],
+                        [null, null, null, null, null, null, 'O']
+                    ] },
+                    { boardSize: 8, winCondition: 5, difficulty: 1, setup: [] },
+                    { boardSize: 9, winCondition: 5, difficulty: 2, setup: [] }
+                ],
+                // Map 1: Băng Giá
+                [
+                    { boardSize: 5, winCondition: 3, difficulty: 0, setup: [] },
+                    { boardSize: 6, winCondition: 4, difficulty: 0, setup: [] },
+                    { boardSize: 7, winCondition: 4, difficulty: 1, setup: [] },
+                    { boardSize: 8, winCondition: 5, difficulty: 1, setup: [] },
+                    { boardSize: 9, winCondition: 5, difficulty: 2, setup: [] }
+                ],
+                // Map 2: Hỏa Diệm
+                [
+                    { boardSize: 5, winCondition: 3, difficulty: 0, setup: [] },
+                    { boardSize: 6, winCondition: 4, difficulty: 0, setup: [] },
+                    { boardSize: 7, winCondition: 4, difficulty: 1, setup: [] },
+                    { boardSize: 8, winCondition: 5, difficulty: 1, setup: [] },
+                    { boardSize: 9, winCondition: 5, difficulty: 2, setup: [] }
+                ],
+                // Map 3: Huyền Bí
+                [
+                    { boardSize: 5, winCondition: 3, difficulty: 0, setup: [] },
+                    { boardSize: 6, winCondition: 4, difficulty: 0, setup: [] },
+                    { boardSize: 7, winCondition: 4, difficulty: 1, setup: [] },
+                    { boardSize: 8, winCondition: 5, difficulty: 1, setup: [] },
+                    { boardSize: 9, winCondition: 5, difficulty: 2, setup: [] }
+                ],
+                // Map 4: Vũ Trụ
+                [
+                    { boardSize: 5, winCondition: 3, difficulty: 0, setup: [] },
+                    { boardSize: 6, winCondition: 4, difficulty: 0, setup: [] },
+                    { boardSize: 7, winCondition: 4, difficulty: 1, setup: [] },
+                    { boardSize: 8, winCondition: 5, difficulty: 1, setup: [] },
+                    { boardSize: 9, winCondition: 5, difficulty: 2, setup: [] }
+                ],
+                // Map 5: BOSS - Mê Cung
+                [
+                    { boardSize: 15, winCondition: 5, difficulty: 2, setup: [] },
+                    { boardSize: 17, winCondition: 6, difficulty: 2, setup: [] },
+                    { boardSize: 19, winCondition: 6, difficulty: 2, setup: [] },
+                    { boardSize: 21, winCondition: 7, difficulty: 2, setup: [] },
+                    { boardSize: 21, winCondition: 7, difficulty: 2, setup: [ // boss level
+                        ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'],
+                        ['W', 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', null, 'W'],
+                        ['W', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'O', 'W'],
+                        ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+                    ] }
+                ]
+            ];
+
+            // ==================== THÀNH TỰU ====================
+            const achievements = [
+                { id: 'first_win', name: 'Chiến thắng đầu tiên', desc: 'Hoàn thành level 1 của bất kỳ map nào.', icon: '🏆', unlocked: false },
+                { id: 'time_master', name: 'Bậc thầy thời gian', desc: 'Hoàn thành một level với hơn 4 phút còn lại.', icon: '⏱️', unlocked: false },
+                { id: 'conqueror', name: 'Kẻ chinh phục', desc: 'Hoàn thành tất cả level của map Rừng Rậm.', icon: '🌳', unlocked: false },
+                { id: 'ice_breaker', name: 'Phá băng', desc: 'Hoàn thành tất cả level của map Băng Giá.', icon: '❄️', unlocked: false },
+                { id: 'inferno', name: 'Hỏa ngục', desc: 'Hoàn thành tất cả level của map Hỏa Diệm.', icon: '🔥', unlocked: false },
+                { id: 'mystic', name: 'Huyền bí', desc: 'Hoàn thành tất cả level của map Huyền Bí.', icon: '🔮', unlocked: false },
+                { id: 'galaxy', name: 'Chinh phục vũ trụ', desc: 'Hoàn thành tất cả level của map Vũ Trụ.', icon: '🌌', unlocked: false },
+                { id: 'the_king', name: 'THE KING', desc: 'Hoàn thành map BOSS - Mê Cung.', icon: '👑', unlocked: false },
+                { id: 'perfect', name: 'Hoàn hảo', desc: 'Thắng mà không để đối thủ đặt quân nào.', icon: '💯', unlocked: false }
+            ];
+
+            // ==================== BIẾN TOÀN CỤC ====================
+            const avatarListX = [
+                '⚔️', '🛡️', '🗡️', '🏹', '🔮', '⚰️', '⚱️', '💀', '👑', '🎭',
+                '🦸', '🦹', '🧙', '🧝', '🧛', '🧟', '🦁', '🐉', '🐲', '🔥'
+            ];
+            const avatarListO = [
+                '🧝', '🧙', '🧛', '🧟', '🧚', '🧜', '🧞', '🦄', '🐉', '🐲',
+                '👾', '🤖', '👻', '💩', '👽', '☠️', '⚡', '🌪️', '❄️', '🌈'
+            ];
+
+            let mode = 'pvp'; // 'pvp', 'pvai', 'campaign'
+            let winCondition = 3;
+            let boardSize = 3;
+            let board = [];
+            let currentPlayer = 'X';
+            let gameOver = false;
+            let timeX = 300, timeO = 300;
+            let activeTimer = null;
+            let timerInterval = null;
+            let moveHistory = [];
+            let aiTimeout = null;
+            let aiDifficulty = 1; // 0:dễ, 1:trung bình, 2:khó
+
+            let playerX = { avatar: '⚔️', name: 'X Player' };
+            let playerO = { avatar: '🧝', name: 'O Player' };
+
+            let currentMapId = 0;
+            let currentLevelId = 0;
+            let completedLevels = {};
+
+            // DOM elements
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const modeScreen = document.getElementById('mode-screen');
+            const avatarScreen = document.getElementById('avatar-screen');
+            const achievementsScreen = document.getElementById('achievements-screen');
+            const campaignMapScreen = document.getElementById('campaign-map-screen');
+            const campaignLevelScreen = document.getElementById('campaign-level-screen');
+            const gameScreen = document.getElementById('game-screen');
+
+            const startBtn = document.getElementById('startBtn');
+            const campaignBtn = document.getElementById('campaignBtn');
+            const achievementsBtn = document.getElementById('achievementsBtn');
+            const modePVP = document.getElementById('modePVP');
+            const modePVAI = document.getElementById('modePVAI');
+            const win3 = document.getElementById('win3');
+            const win5 = document.getElementById('win5');
+            const win7 = document.getElementById('win7');
+            const nextBtn = document.getElementById('nextBtn');
+            const fightBtn = document.getElementById('fightBtn');
+            const resetGameBtn = document.getElementById('resetGameBtn');
+            const exitGameBtn = document.getElementById('exitGameBtn');
+            const backFromMode = document.getElementById('backFromModeBtn');
+            const backFromAvatar = document.getElementById('backFromAvatarBtn');
+            const backFromAchievements = document.getElementById('backFromAchievementsBtn');
+            const backFromCampaign = document.getElementById('backFromCampaignBtn');
+            const backToMap = document.getElementById('backToMapBtn');
+
+            const mapGrid = document.getElementById('mapGrid');
+            const levelGrid = document.getElementById('levelGrid');
+            const mapNameDisplay = document.getElementById('mapNameDisplay');
+            const achievementsList = document.getElementById('achievementsList');
+
+            const avatarXGrid = document.getElementById('avatarXGrid');
+            const avatarOGrid = document.getElementById('avatarOGrid');
+            const nameX = document.getElementById('nameX');
+            const nameO = document.getElementById('nameO');
+            const playerXAvatar = document.getElementById('playerXAvatar');
+            const playerOAvatar = document.getElementById('playerOAvatar');
+            const playerXName = document.getElementById('playerXName');
+            const playerOName = document.getElementById('playerOName');
+            const playerXTimer = document.getElementById('playerXTimer');
+            const playerOTimer = document.getElementById('playerOTimer');
+            const turnXIndicator = document.getElementById('turnXIndicator');
+            const turnOIndicator = document.getElementById('turnOIndicator');
+            const boardEl = document.getElementById('board');
+            const historyList = document.getElementById('historyList');
+
+            const gameOverOverlay = document.getElementById('gameOverOverlay');
+            const gameOverTitle = document.getElementById('gameOverTitle');
+            const gameOverQuote = document.getElementById('gameOverQuote');
+            const gameOverBox = document.getElementById('gameOverBox');
+            const overlayMenuBtn = document.getElementById('overlayMenuBtn');
+            const overlayReplayBtn = document.getElementById('overlayReplayBtn');
+            const overlayStayBtn = document.getElementById('overlayStayBtn');
+            const overlayNextBtn = document.getElementById('overlayNextBtn');
+
+            const confettiCanvas = document.getElementById('confetti-canvas');
+            const ctxConfetti = confettiCanvas.getContext('2d');
+
+            let confettiParticles = [];
+            let animationId = null;
+            let audioCtx = null;
+            let audioEnabled = false;
+            let muted = false;
+            let musicMuted = false;
+            const muteBtn = document.getElementById('muteBtn');
+            const musicBtn = document.getElementById('musicBtn');
+
+            let musicSource = null;
+            let musicGain = null;
+
+            // ==================== HÀM KHỞI TẠO AVATAR ====================
+            function initAvatarGrids() {
+                avatarXGrid.innerHTML = '';
+                avatarListX.forEach(av => {
+                    const div = document.createElement('div');
+                    div.className = 'avatar-item' + (av === '⚔️' ? ' selected' : '');
+                    div.dataset.avatar = av;
+                    div.textContent = av;
+                    div.addEventListener('click', () => {
+                        document.querySelectorAll('#avatarXGrid .avatar-item').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                    });
+                    avatarXGrid.appendChild(div);
+                });
+
+                avatarOGrid.innerHTML = '';
+                avatarListO.forEach(av => {
+                    const div = document.createElement('div');
+                    div.className = 'avatar-item' + (av === '🧝' ? ' selected' : '');
+                    div.dataset.avatar = av;
+                    div.textContent = av;
+                    div.addEventListener('click', () => {
+                        document.querySelectorAll('#avatarOGrid .avatar-item').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                    });
+                    avatarOGrid.appendChild(div);
+                });
+            }
+
+            // ==================== THÀNH TỰU ====================
+            function checkAchievements(winner, timeLeft, moves) {
+                if (!achievements[0].unlocked && winner === 'X') achievements[0].unlocked = true;
+                if (timeX >= 240 && !achievements[1].unlocked) achievements[1].unlocked = true;
+                if (mode === 'campaign') {
+                    let mapLevels = levelsData[currentMapId];
+                    let allCompleted = true;
+                    for (let i = 0; i < mapLevels.length; i++) {
+                        if (!completedLevels[`${currentMapId}_${i}`]) { allCompleted = false; break; }
+                    }
+                    if (allCompleted) {
+                        if (currentMapId === 0) achievements[2].unlocked = true;
+                        if (currentMapId === 1) achievements[3].unlocked = true;
+                        if (currentMapId === 2) achievements[4].unlocked = true;
+                        if (currentMapId === 3) achievements[5].unlocked = true;
+                        if (currentMapId === 4) achievements[6].unlocked = true;
+                        if (currentMapId === 5) achievements[7].unlocked = true;
+                    }
+                }
+                if (winner === 'X' && moveHistory.length === 1) achievements[8].unlocked = true;
+                renderAchievements();
+            }
+
+            function renderAchievements() {
+                achievementsList.innerHTML = '';
+                achievements.forEach(ach => {
+                    const div = document.createElement('div');
+                    div.className = 'achievement-item' + (ach.unlocked ? '' : ' achievement-locked');
+                    div.innerHTML = `
+                        <span class="achievement-icon">${ach.icon}</span>
+                        <div>
+                            <div class="achievement-name">${ach.name}</div>
+                            <div class="achievement-desc">${ach.desc}</div>
+                        </div>
+                    `;
+                    achievementsList.appendChild(div);
+                });
+            }
+
+            // ==================== ÂM THANH ====================
+            async function enableAudio() {
+                if (audioEnabled) return;
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    await audioCtx.resume();
+                    audioEnabled = true;
+                    startBackgroundMusic();
+                } catch (e) {}
+            }
+
+            function playSound(type) {
+                if (muted || !audioEnabled || !audioCtx) return;
+                const now = audioCtx.currentTime;
+                if (type === 'place') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'win') {
+                    const notes = [523.25, 659.25, 783.99, 1046.5];
+                    notes.forEach((freq, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.2, now + i * 0.15);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.15 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + i * 0.15);
+                        osc.stop(now + i * 0.15 + 0.3);
+                    });
+                }
+            }
+
+            function startBackgroundMusic() {
+                if (!audioCtx || musicSource) return;
+                const now = audioCtx.currentTime;
+                const loopDuration = 30;
+                const sampleRate = audioCtx.sampleRate;
+                const bufferSize = sampleRate * loopDuration;
+                const buffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    let t = i / sampleRate;
+                    let val = 0;
+                    val += 0.4 * Math.sin(2 * Math.PI * 73.42 * t);
+                    val += 0.1 * Math.sin(4 * Math.PI * 73.42 * t);
+                    let phase = Math.floor(t / 4) % 4;
+                    let melodyFreq;
+                    switch(phase) {
+                        case 0: melodyFreq = 146.83; break;
+                        case 1: melodyFreq = 174.61; break;
+                        case 2: melodyFreq = 220.0; break;
+                        case 3: melodyFreq = 261.63; break;
+                    }
+                    val += 0.2 * Math.sin(2 * Math.PI * melodyFreq * t);
+                    val += 0.1 * Math.sin(2 * Math.PI * 110.0 * t * 0.5);
+                    val += 0.1 * Math.sin(2 * Math.PI * 146.83 * t * 0.5);
+                    val += (Math.random() * 2 - 1) * 0.02;
+                    data[i] = val * 0.5;
+                }
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.loop = true;
+                musicGain = audioCtx.createGain();
+                musicGain.gain.value = musicMuted ? 0 : 0.15;
+                source.connect(musicGain);
+                musicGain.connect(audioCtx.destination);
+                source.start(now);
+                musicSource = source;
+            }
+
+            function toggleMusic() {
+                if (!audioCtx) return;
+                musicMuted = !musicMuted;
+                if (musicGain) musicGain.gain.value = musicMuted ? 0 : 0.15;
+                musicBtn.innerHTML = musicMuted ? '🔇' : '🎵';
+                musicBtn.classList.toggle('muted', musicMuted);
+            }
+
+            muteBtn.addEventListener('click', () => {
+                muted = !muted;
+                muteBtn.innerHTML = muted ? '🔇' : '🔊';
+                muteBtn.classList.toggle('muted', muted);
+            });
+
+            musicBtn.addEventListener('click', toggleMusic);
+
+            // ==================== PHÁO HOA ====================
+            function startConfetti() {
+                confettiCanvas.style.display = 'block';
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+                confettiParticles = [];
+                for (let i = 0; i < 200; i++) {
+                    confettiParticles.push({
+                        x: Math.random() * confettiCanvas.width,
+                        y: Math.random() * confettiCanvas.height * 0.5,
+                        vx: (Math.random() - 0.5) * 8,
+                        vy: Math.random() * 4 + 2,
+                        size: Math.random() * 6 + 4,
+                        color: `hsl(${Math.random() * 360}, 100%, 60%)`
+                    });
+                }
+                if (animationId) cancelAnimationFrame(animationId);
+                function draw() {
+                    ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                    let alive = false;
+                    for (let p of confettiParticles) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.1;
+                        ctxConfetti.fillStyle = p.color;
+                        ctxConfetti.fillRect(p.x, p.y, p.size, p.size);
+                        if (p.y < confettiCanvas.height) alive = true;
+                    }
+                    if (alive) {
+                        animationId = requestAnimationFrame(draw);
+                    } else {
+                        confettiCanvas.style.display = 'none';
+                    }
+                }
+                draw();
+            }
+
+            // ==================== ĐỒNG HỒ ====================
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+
+            function updateTimersDisplay() {
+                playerXTimer.textContent = formatTime(timeX);
+                if (mode === 'pvai' || mode === 'campaign') {
+                    let diffText = ['(Dễ)', '(TB)', '(Khó)'][aiDifficulty];
+                    playerOTimer.textContent = `∞ ${diffText}`;
+                } else {
+                    playerOTimer.textContent = formatTime(timeO);
+                }
+            }
+
+            function stopTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                activeTimer = null;
+            }
+
+            function startTimerFor(player) {
+                if (gameOver) return;
+                if ((mode === 'pvai' || mode === 'campaign') && player === 'O') return;
+                stopTimer();
+                activeTimer = player;
+                timerInterval = setInterval(() => {
+                    if (gameOver) {
+                        stopTimer();
+                        return;
+                    }
+                    if (activeTimer === 'X') {
+                        timeX--;
+                        if (timeX <= 0) {
+                            timeX = 0;
+                            updateTimersDisplay();
+                            gameOver = true;
+                            stopTimer();
+                            showGameOver('O', true);
+                            return;
+                        }
+                    } else if (activeTimer === 'O' && mode !== 'pvai' && mode !== 'campaign') {
+                        timeO--;
+                        if (timeO <= 0) {
+                            timeO = 0;
+                            updateTimersDisplay();
+                            gameOver = true;
+                            stopTimer();
+                            showGameOver('X', true);
+                            return;
+                        }
+                    }
+                    updateTimersDisplay();
+                }, 1000);
+            }
+
+            function updateTurnDisplay() {
+                turnXIndicator.style.display = currentPlayer === 'X' ? 'block' : 'none';
+                turnOIndicator.style.display = currentPlayer === 'O' ? 'block' : 'none';
+            }
+
+            // ==================== KIỂM TRA THẮNG ====================
+            function countDirection(row, col, dx, dy, player) {
+                let cnt = 0;
+                let r = row + dx, c = col + dy;
+                while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r] && board[r][c] === player) {
+                    cnt++;
+                    r += dx;
+                    c += dy;
+                }
+                return cnt;
+            }
+
+            function checkWinAt(row, col, player) {
+                const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+                for (let [dx, dy] of dirs) {
+                    const total = 1 + countDirection(row, col, dx, dy, player) + countDirection(row, col, -dx, -dy, player);
+                    if (total >= winCondition) return true;
+                }
+                return false;
+            }
+
+            // ==================== LỊCH SỬ ====================
+            function addHistory(move) {
+                moveHistory.push(move);
+                const li = document.createElement('li');
+                li.textContent = move;
+                historyList.appendChild(li);
+                historyList.scrollTop = historyList.scrollHeight;
+            }
+
+            // ==================== XỬ LÝ NƯỚC ĐI ====================
+            function handleMove(row, col) {
+                if (gameOver) return false;
+                if (board[row][col] !== null) return false;
+
+                board[row][col] = currentPlayer;
+                const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.textContent = currentPlayer === 'W' ? '◻' : currentPlayer;
+                    cell.classList.add(currentPlayer);
+                    cell.classList.add('pen-effect');
+                    setTimeout(() => cell.classList.remove('pen-effect'), 200);
+                }
+
+                playSound('place');
+                const playerName = currentPlayer === 'X' ? playerX.name : playerO.name;
+                addHistory(`${playerName} (${currentPlayer}): [${row},${col}]`);
+
+                if (checkWinAt(row, col, currentPlayer)) {
+                    gameOver = true;
+                    stopTimer();
+                    showGameOver(currentPlayer, false);
+                    if (mode === 'campaign' && currentPlayer === 'X') {
+                        completedLevels[`${currentMapId}_${currentLevelId}`] = true;
+                        checkAchievements('X', timeX, moveHistory.length);
+                    }
+                    return true;
+                }
+
+                let isFull = true;
+                for (let r = 0; r < boardSize; r++) {
+                    if (board[r].includes(null)) { isFull = false; break; }
+                }
+                if (isFull) {
+                    gameOver = true;
+                    stopTimer();
+                    showGameOver(null, false);
+                    return true;
+                }
+
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                updateTurnDisplay();
+                startTimerFor(currentPlayer);
+
+                if ((mode === 'pvai' || mode === 'campaign') && currentPlayer === 'O' && !gameOver) {
+                    if (aiTimeout) clearTimeout(aiTimeout);
+                    aiTimeout = setTimeout(() => aiMove(), 300);
+                }
+                return true;
+            }
+
+            // ==================== AI THÔNG MINH ====================
+            function evaluatePosition(r, c, player) {
+                let totalScore = 0;
+                const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+                for (let [dx, dy] of dirs) {
+                    let count = 1;
+                    count += countDirection(r, c, dx, dy, player);
+                    count += countDirection(r, c, -dx, -dy, player);
+                    if (count >= winCondition) totalScore += 10000;
+                    else if (count === winCondition - 1) totalScore += 1000;
+                    else totalScore += count * count;
+                }
+                return totalScore;
+            }
+
+            function aiMove() {
+                if (gameOver || currentPlayer !== 'O') return;
+
+                let bestScore = -1;
+                let bestMoves = [];
+
+                for (let r = 0; r < boardSize; r++) {
+                    for (let c = 0; c < boardSize; c++) {
+                        if (board[r][c] !== null) continue;
+
+                        board[r][c] = 'O';
+                        if (checkWinAt(r, c, 'O')) {
+                            bestMoves = [[r, c]];
+                            bestScore = Infinity;
+                            board[r][c] = null;
+                            break;
+                        }
+                        board[r][c] = null;
+
+                        board[r][c] = 'X';
+                        if (checkWinAt(r, c, 'X')) {
+                            let score = 9000;
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMoves = [[r, c]];
+                            } else if (score === bestScore) {
+                                bestMoves.push([r, c]);
+                            }
+                            board[r][c] = null;
+                            continue;
+                        }
+                        board[r][c] = null;
+
+                        let attackScore = evaluatePosition(r, c, 'O');
+                        let defenseScore = evaluatePosition(r, c, 'X');
+                        let total;
+                        if (aiDifficulty === 0) total = attackScore * 1.5 + defenseScore * 0.5;
+                        else if (aiDifficulty === 1) total = attackScore + defenseScore;
+                        else total = attackScore * 1.2 + defenseScore * 1.5;
+
+                        if (total > bestScore) {
+                            bestScore = total;
+                            bestMoves = [[r, c]];
+                        } else if (total === bestScore) {
+                            bestMoves.push([r, c]);
+                        }
+                    }
+                    if (bestScore === Infinity) break;
+                }
+
+                if (bestMoves.length === 0) {
+                    const empty = [];
+                    for (let r = 0; r < boardSize; r++) {
+                        for (let c = 0; c < boardSize; c++) {
+                            if (board[r][c] === null) empty.push([r, c]);
+                        }
+                    }
+                    if (empty.length > 0) bestMoves = [empty[Math.floor(Math.random() * empty.length)]];
+                    else return;
+                }
+
+                const [r, c] = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+                handleMove(r, c);
+            }
+
+            // ==================== HIỂN THỊ OVERLAY ====================
+            function showGameOver(winner, timeOut) {
+                if (winner) {
+                    const quotes = {
+                        X: ['"BÁ CHỦ THẾ GIỚI"', '"XƯA NAY VÔ ĐỊCH"', '"CHIẾN BINH THÉP"', '"HUYỀN THOẠI SỐNG"', '"VUA CARO"'],
+                        O: ['"PHÁP SƯ TỐI THƯỢNG"', '"KẺ THỐNG TRỊ"', '"BẤT BẠI"', '"CHIẾN THẮNG VẺ VANG"', '"ĐẾ VƯƠNG"']
+                    };
+                    const arr = quotes[winner] || ['"CHIẾN THẮNG"'];
+                    const quote = arr[Math.floor(Math.random() * arr.length)] + (timeOut ? ' (HẾT GIỜ)' : '');
+                    gameOverTitle.innerText = `🏆 ${winner === 'X' ? playerX.name : playerO.name} CHIẾN THẮNG 🏆`;
+                    gameOverQuote.innerText = quote;
+                    gameOverBox.classList.remove('draw');
+                    startConfetti();
+                    playSound('win');
+                } else {
+                    gameOverTitle.innerText = '🤝 HÒA CỜ';
+                    gameOverQuote.innerText = 'Không phân thắng bại';
+                    gameOverBox.classList.add('draw');
+                }
+
+                if (mode === 'campaign' && winner === 'X') {
+                    let nextLevel = currentLevelId + 1;
+                    if (nextLevel < levelsData[currentMapId].length) {
+                        overlayNextBtn.style.display = 'inline-block';
+                        overlayNextBtn.onclick = () => {
+                            gameOverOverlay.classList.remove('show');
+                            startCampaignLevel(currentMapId, nextLevel);
+                        };
+                    } else {
+                        overlayNextBtn.style.display = 'none';
+                    }
+                } else {
+                    overlayNextBtn.style.display = 'none';
+                }
+
+                gameOverOverlay.classList.add('show');
+            }
+
+            // ==================== XỬ LÝ CÁC LỰA CHỌN TRONG OVERLAY ====================
+            overlayMenuBtn.addEventListener('click', () => {
+                gameOverOverlay.classList.remove('show');
+                gameScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+                stopTimer();
+            });
+
+            overlayReplayBtn.addEventListener('click', () => {
+                gameOverOverlay.classList.remove('show');
+                resetGame();
+            });
+
+            overlayStayBtn.addEventListener('click', () => {
+                gameOverOverlay.classList.remove('show');
+            });
+
+            // ==================== TẠO BÀN CỜ ====================
+            function createBoard(setup = null) {
+                boardEl.innerHTML = '';
+                boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+                board = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
+
+                if (setup && setup.length > 0) {
+                    for (let r = 0; r < Math.min(setup.length, boardSize); r++) {
+                        for (let c = 0; c < Math.min(setup[r].length, boardSize); c++) {
+                            board[r][c] = setup[r][c];
+                        }
+                    }
+                }
+
+                for (let r = 0; r < boardSize; r++) {
+                    for (let c = 0; c < boardSize; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        if (board[r][c]) {
+                            cell.textContent = board[r][c] === 'W' ? '◻' : board[r][c];
+                            cell.classList.add(board[r][c]);
+                        }
+                        cell.addEventListener('click', () => {
+                            if (gameOver) return;
+                            if ((mode === 'pvai' || mode === 'campaign') && currentPlayer !== 'X') return;
+                            if (board[r][c] === null) handleMove(r, c);
+                        });
+                        boardEl.appendChild(cell);
+                    }
+                }
+            }
+
+            // ==================== RESET GAME ====================
+            function resetGame() {
+                gameOver = false;
+                currentPlayer = 'X';
+                timeX = 300;
+                timeO = 300;
+                updateTimersDisplay();
+                stopTimer();
+                startTimerFor('X');
+                moveHistory = [];
+                historyList.innerHTML = '<li>⚔️ Bắt đầu</li>';
+
+                if (mode === 'campaign') {
+                    const level = levelsData[currentMapId][currentLevelId];
+                    boardSize = level.boardSize;
+                    winCondition = level.winCondition;
+                    aiDifficulty = level.difficulty;
+                    createBoard(level.setup);
+                } else {
+                    createBoard();
+                }
+
+                updateTurnDisplay();
+                if (aiTimeout) clearTimeout(aiTimeout);
+            }
+
+            // ==================== BẮT ĐẦU GAME (CHƠI NHANH) ====================
+            function startQuickGame() {
+                const selectedX = document.querySelector('#avatarXGrid .selected');
+                if (selectedX) playerX.avatar = selectedX.dataset.avatar;
+                playerX.name = nameX.value.trim() || 'X Player';
+                if (playerX.name.length > 10) playerX.name = playerX.name.slice(0,10);
+
+                if (mode === 'pvp') {
+                    const selectedO = document.querySelector('#avatarOGrid .selected');
+                    if (selectedO) playerO.avatar = selectedO.dataset.avatar;
+                    playerO.name = nameO.value.trim() || 'O Player';
+                } else {
+                    playerO.avatar = '🤖';
+                    playerO.name = 'ROBOT';
+                }
+                if (playerO.name.length > 10) playerO.name = playerO.name.slice(0,10);
+
+                playerXAvatar.textContent = playerX.avatar;
+                playerOAvatar.textContent = playerO.avatar;
+                playerXName.textContent = playerX.name;
+                playerOName.textContent = playerO.name;
+
+                welcomeScreen.classList.add('hidden');
+                modeScreen.classList.add('hidden');
+                avatarScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+
+                resetGame();
+                enableAudio();
+            }
+
+            // ==================== BẮT ĐẦU CAMPAIGN LEVEL ====================
+            function startCampaignLevel(mapId, levelId) {
+                currentMapId = mapId;
+                currentLevelId = levelId;
+                const level = levelsData[mapId][levelId];
+                boardSize = level.boardSize;
+                winCondition = level.winCondition;
+                aiDifficulty = level.difficulty;
+
+                const diffNames = ['Robot (Dễ)', 'Robot (TB)', 'Robot (Khó)'];
+                playerO.name = diffNames[aiDifficulty];
+                playerO.avatar = '🤖';
+
+                const selectedX = document.querySelector('#avatarXGrid .selected');
+                if (selectedX) playerX.avatar = selectedX.dataset.avatar;
+                playerX.name = nameX.value.trim() || 'X Player';
+                if (playerX.name.length > 10) playerX.name = playerX.name.slice(0,10);
+
+                playerXAvatar.textContent = playerX.avatar;
+                playerOAvatar.textContent = playerO.avatar;
+                playerXName.textContent = playerX.name;
+                playerOName.textContent = playerO.name;
+
+                campaignMapScreen.classList.add('hidden');
+                campaignLevelScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+
+                resetGame();
+            }
+
+            // ==================== TẠO GIAO DIỆN MAP ====================
+            function renderMapGrid() {
+                mapGrid.innerHTML = '';
+                maps.forEach((map, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'map-card';
+                    card.innerHTML = `
+                        <div class="map-icon">${map.icon}</div>
+                        <h3 style="color: #ffd966;">${map.name}</h3>
+                    `;
+                    if (index === 5) {
+                        let map4Completed = true;
+                        for (let i = 0; i < levelsData[4].length; i++) {
+                            if (!completedLevels[`4_${i}`]) { map4Completed = false; break; }
+                        }
+                        if (!map4Completed) {
+                            card.style.opacity = '0.5';
+                            card.style.pointerEvents = 'none';
+                        }
+                    }
+                    card.addEventListener('click', () => {
+                        currentMapId = map.id;
+                        mapNameDisplay.textContent = map.name;
+                        renderLevelGrid(map.id);
+                        campaignMapScreen.classList.add('hidden');
+                        campaignLevelScreen.classList.remove('hidden');
+                    });
+                    mapGrid.appendChild(card);
+                });
+            }
+
+            // ==================== TẠO GIAO DIỆN LEVEL ====================
+            function renderLevelGrid(mapId) {
+                levelGrid.innerHTML = '';
+                const levels = levelsData[mapId];
+                for (let i = 0; i < levels.length; i++) {
+                    const btn = document.createElement('div');
+                    btn.className = 'level-btn';
+                    btn.textContent = `Màn ${i+1}`;
+                    if (completedLevels[`${mapId}_${i}`]) btn.classList.add('completed');
+                    if (i > 0 && !completedLevels[`${mapId}_${i-1}`]) {
+                        btn.classList.add('locked');
+                    } else {
+                        btn.addEventListener('click', () => {
+                            startCampaignLevel(mapId, i);
+                        });
+                    }
+                    levelGrid.appendChild(btn);
+                }
+            }
+
+            // ==================== SỰ KIỆN CHUYỂN MÀN HÌNH ====================
+            startBtn.addEventListener('click', () => {
+                welcomeScreen.classList.add('hidden');
+                modeScreen.classList.remove('hidden');
+                modePVP.classList.add('active');
+                modePVAI.classList.remove('active');
+                win3.classList.add('active');
+                win5.classList.remove('active');
+                win7.classList.remove('active');
+                mode = 'pvp';
+            });
+
+            campaignBtn.addEventListener('click', () => {
+                welcomeScreen.classList.add('hidden');
+                campaignMapScreen.classList.remove('hidden');
+                renderMapGrid();
+                mode = 'campaign';
+            });
+
+            achievementsBtn.addEventListener('click', () => {
+                welcomeScreen.classList.add('hidden');
+                achievementsScreen.classList.remove('hidden');
+                renderAchievements();
+            });
+
+            modePVP.addEventListener('click', () => {
+                modePVP.classList.add('active');
+                modePVAI.classList.remove('active');
+                mode = 'pvp';
+                document.getElementById('avatarOBox').style.opacity = '1';
+                nameO.disabled = false;
+            });
+
+            modePVAI.addEventListener('click', () => {
+                modePVAI.classList.add('active');
+                modePVP.classList.remove('active');
+                mode = 'pvai';
+                document.getElementById('avatarOBox').style.opacity = '0.5';
+                nameO.disabled = true;
+                nameO.value = 'ROBOT';
+            });
+
+            win3.addEventListener('click', () => {
+                win3.classList.add('active');
+                win5.classList.remove('active');
+                win7.classList.remove('active');
+                winCondition = 3;
+                boardSize = 3;
+            });
+
+            win5.addEventListener('click', () => {
+                win5.classList.add('active');
+                win3.classList.remove('active');
+                win7.classList.remove('active');
+                winCondition = 5;
+                boardSize = 15;
+            });
+
+            win7.addEventListener('click', () => {
+                win7.classList.add('active');
+                win3.classList.remove('active');
+                win5.classList.remove('active');
+                winCondition = 7;
+                boardSize = 21;
+            });
+
+            nextBtn.addEventListener('click', () => {
+                modeScreen.classList.add('hidden');
+                avatarScreen.classList.remove('hidden');
+                initAvatarGrids();
+                nameX.value = 'X Player';
+                nameO.value = mode === 'pvai' ? 'ROBOT' : 'O Player';
+                nameO.disabled = mode === 'pvai';
+            });
+
+            backFromMode.addEventListener('click', () => {
+                modeScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+            });
+
+            backFromAvatar.addEventListener('click', () => {
+                avatarScreen.classList.add('hidden');
+                modeScreen.classList.remove('hidden');
+            });
+
+            backFromAchievements.addEventListener('click', () => {
+                achievementsScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+            });
+
+            backFromCampaign.addEventListener('click', () => {
+                campaignMapScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+            });
+
+            backToMap.addEventListener('click', () => {
+                campaignLevelScreen.classList.add('hidden');
+                campaignMapScreen.classList.remove('hidden');
+            });
+
+            fightBtn.addEventListener('click', startQuickGame);
+            resetGameBtn.addEventListener('click', resetGame);
+            exitGameBtn.addEventListener('click', () => {
+                gameScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+                stopTimer();
+            });
+
+            window.addEventListener('resize', () => {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            });
+
+            initAvatarGrids();
+            renderAchievements();
+        })();
+    </script>
+</body>
+</html>
