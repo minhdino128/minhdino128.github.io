@@ -3,21 +3,29 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
   min-height: 100vh;
   min-height: 100dvh;
+
   background: linear-gradient(
-    135deg,
-    #ffe0ed,
-    #ffc8e2,
-    #ffeaf3
+    160deg,
+    #ff9da8 0%,
+    #ffcee8 45%,
+    #a58acb 100%
   );
 
   font-family: "Protest Riot", cursive;
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
   overflow-x: hidden;
 }
 
@@ -25,10 +33,12 @@ body {
   width: 100%;
   min-height: 100dvh;
   padding: 30px 16px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   text-align: center;
 }
 
@@ -37,105 +47,108 @@ body {
   width: min(260px, 70vw);
   height: 230px;
   object-fit: contain;
-  border-radius: 22px;
+  border-radius: 25px;
 }
 
-/* Chữ xin lỗi */
+/* Tiêu đề */
 .title {
-  color: #e83e8c;
-  font-size: clamp(22px, 5vw, 35px);
+  margin: 20px 0 12px;
+  color: #ff278b;
+  font-size: clamp(22px, 4vw, 35px);
   line-height: 1.5;
-  margin: 20px 0;
-  text-shadow: 0 3px 10px rgba(255,255,255,0.7);
+
+  text-shadow:
+    0 2px 12px rgba(255,255,255,0.55);
 }
 
 .title span {
-  display: inline-block;
+  display: block;
   font-size: 0.65em;
-  color: #fb6ca4;
+  color: #ec3c90;
 }
 
-/* Khu vực nút */
+/* Vùng nút */
 .buttons {
+  width: 100%;
+  min-height: 110px;
+  margin-top: 20px;
+
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 22px;
-  width: 100%;
-  min-height: 90px;
+
   position: relative;
   overflow: visible;
 }
 
-/* Cả hai nút */
-.btn {
-  border: none;
-  border-radius: 9999px;
-  padding: 15px 25px;
+/* NÚT LIQUID GLASS */
+button.btn {
+  appearance: none;
+  -webkit-appearance: none;
+
+  border-radius: 9999px !important;
+  border: 1.5px solid rgba(255,255,255,0.8);
+
+  padding: 17px 30px;
+
+  background: rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(22px) saturate(190%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%);
+
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,0.9),
+    inset 0 -2px 5px rgba(255,255,255,0.1),
+    0 8px 28px rgba(170,50,130,0.18);
+
+  color: #a61d64;
   font-family: "Protest Riot", cursive;
   font-size: 17px;
-  cursor: pointer;
+  font-weight: 600;
+
   white-space: nowrap;
+  cursor: pointer;
+
   position: relative;
   transform-origin: center;
+
   transition:
-    transform 0.4s ease,
+    transform 0.45s ease,
     background 0.3s ease,
     box-shadow 0.3s ease;
+
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Nút chấp nhận */
-.btn--yes {
-  color: white;
-  background: linear-gradient(
-    135deg,
-    #ff4d9d,
-    #ff85bc,
-    #ffacd2
-  );
-  box-shadow:
-    0 7px 20px rgba(255, 55, 133, 0.35),
-    inset 0 2px 4px rgba(255,255,255,0.3);
+/* Nút đồng ý */
+button.btn--yes {
+  background: rgba(255,255,255,0.43);
+  color: #df207e;
   z-index: 2;
 }
 
-.btn--yes:hover {
-  background: #ff4d9d;
+button.btn--yes:hover {
+  background: rgba(255,255,255,0.63);
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    0 10px 35px rgba(238,54,145,0.28);
 }
 
 /* Nút từ chối */
-.btn--no {
-  color: #e75480;
-  background: #fff4f9;
-  border: 2px solid #ffb8d4;
-  box-shadow:
-    0 5px 16px rgba(255, 100, 160, 0.2);
-  z-index: 1;
-
-  opacity: 1;
+button.btn--no {
+  background: rgba(255,255,255,0.19);
+  color: #9e477b;
+  z-index: 3;
 }
 
-.btn--no:disabled {
-  cursor: default;
-}
-
-/* Giữ nút từ chối bé xíu */
-.btn--no.tiny {
-  transform: scale(0.01) !important;
-  opacity: 1 !important;
-  pointer-events: none;
-}
-
-/* Khi em tha lỗi */
+/* Sau khi được tha lỗi */
 .buttons.hidden {
-  display: none;
+  display: none !important;
 }
 
 body.accepted .title {
-  color: #ff2991;
-  animation: happyPop 0.6s ease;
+  animation: happyPop 0.7s ease;
 }
 
 @keyframes happyPop {
@@ -157,19 +170,20 @@ body.accepted .title {
 /* Điện thoại */
 @media (max-width: 600px) {
   .cat-img {
+    width: 200px;
     height: 190px;
-  }
-
-  .buttons {
-    gap: 10px;
-  }
-
-  .btn {
-    padding: 12px 15px;
-    font-size: 13px;
   }
 
   .title {
     font-size: 23px;
+  }
+
+  .buttons {
+    gap: 12px;
+  }
+
+  button.btn {
+    font-size: 13px;
+    padding: 13px 17px;
   }
 }
