@@ -1,3 +1,4 @@
+
 "use strict";
 
 const titleElement = document.querySelector(".title");
@@ -32,9 +33,122 @@ const messages = [
 ];
 
 let noCount = 0;
+let currentScale = 1;
+let positionReady = false;
 
-yesButton.addEventListener("click", handleYesClick);
+// Khoảng dịch chuyển mỗi lần
+const MIN_MOVE = 20;
+const MAX_MOVE = 60;
 
+// Khoảng cách an toàn giữa hai nút
+const SAFE_GAP = 20;
+
+// Thiết lập vị trí ban đầu
+function setupNoButton() {
+  // Lấy tọa độ nút đồng ý
+  const yesRect = yesButton.getBoundingClientRect();
+
+  const x = Math.min(
+    window.innerWidth - 30,
+    yesRect.right + 110
+  );
+
+  const y = Math.min(
+    window.innerHeight - 30,
+    yesRect.top + yesRect.height / 2
+  );
+
+  noButton.style.left = `${x}px`;
+  noButton.style.top = `${y}px`;
+
+  positionReady = true;
+}
+
+// Tạo hình chữ nhật của nút từ chối
+function getNoRect(x, y, scale) {
+  const width = noButton.offsetWidth * scale;
+  const height = noButton.offsetHeight * scale;
+
+  return {
+    left: x - width / 2,
+    right: x + width / 2,
+    top: y - height / 2,
+    bottom: y + height / 2
+  };
+}
+
+// Kiểm tra hai nút có chạm nhau không
+function isOverlapping(noRect, yesRect) {
+  return (
+    noRect.left < yesRect.right + SAFE_GAP &&
+    noRect.right > yesRect.left - SAFE_GAP &&
+    noRect.top < yesRect.bottom + SAFE_GAP &&
+    noRect.bottom > yesRect.top - SAFE_GAP
+  );
+}
+
+// Dịch chuyển nút từ chối đoạn ngắn
+function moveNoButtonRandom(scale) {
+  if (!positionReady) setupNoButton();
+
+  const currentX = parseFloat(noButton.style.left);
+  const currentY = parseFloat(noButton.style.top);
+
+  const yesRect = yesButton.getBoundingClientRect();
+
+  const width = noButton.offsetWidth * scale;
+  const height = noButton.offsetHeight * scale;
+
+  const minX = width / 2 + 8;
+  const maxX = window.innerWidth - width / 2 - 8;
+
+  const minY = height / 2 + 8;
+  const maxY = window.innerHeight - height / 2 - 8;
+
+  let found = false;
+  let targetX = currentX;
+  let targetY = currentY;
+
+  for (let i = 0; i < 150; i++) {
+    const angle = Math.random() * Math.PI * 2;
+
+    const distance =
+      MIN_MOVE + Math.random() * (MAX_MOVE - MIN_MOVE);
+
+    const x = Math.max(
+      minX,
+      Math.min(maxX, currentX + Math.cos(angle) * distance)
+    );
+
+    const y = Math.max(
+      minY,
+      Math.min(maxY, currentY + Math.sin(angle) * distance)
+    );
+
+    const noRect = getNoRect(x, y, scale);
+
+    if (!isOverlapping(noRect, yesRect)) {
+      targetX = x;
+      targetY = y;
+      found = true;
+      break;
+    }
+  }
+
+  // Nếu không tìm được vị trí phù hợp thì giữ nguyên
+  if (!found) {
+    targetX = currentX;
+    targetY = currentY;
+  }
+
+  noButton.style.left = `${targetX}px`;
+  noButton.style.top = `${targetY}px`;
+
+  noButton.style.transform =
+    `translate(-50%, -50%) scale(${scale})`;
+}
+
+// Nút từ chối
 noButton.addEventListener("click", function () {
   noCount++;
 
@@ -43,6 +157,7 @@ noButton.addEventListener("click", function () {
     1
   );
 
+  // Đổi ảnh mèo
   const imageIndex = Math.min(
     Math.ceil(noCount / 4),
     MAX_IMAGES
@@ -51,48 +166,43 @@ noButton.addEventListener("click", function () {
   changeImage(imageIndex);
 
   // Nút đồng ý to dần
-  const yesScale = 1 + progress * 5;
-  yesButton.style.transform = `scale(${yesScale})`;
+  // Giới hạn mức phóng to để có chỗ cho nút từ chối
+  const yesScale = 1 + progress * 2.2;
 
-  // Nút từ chối nhỏ dần nhưng không biến mất
-  const noScale = Math.max(0.03, 1 - progress * 0.97);
+  yesButton.style.transform =
+    `scale(${yesScale})`;
 
-  // Đổi câu chữ
+  // Nút từ chối nhỏ dần, tối thiểu 3%
+  currentScale = Math.max(
+    0.03,
+    1 - progress * 0.97
+  );
+
+  // Thay câu nói
   noButton.textContent =
     messages[Math.min(noCount, messages.length - 1)];
 
-  // Cho nút từ chối nhảy lung tung
-  moveNoButtonRandom(noScale);
+  // Nhảy một đoạn ngắn
+  moveNoButtonRandom(currentScale);
 });
 
-function moveNoButtonRandom(scale) {
-  const buttonWidth = noButton.offsetWidth;
-  const buttonHeight = noButton.offsetHeight;
-
-  const maxX = window.innerWidth - buttonWidth;
-  const maxY = window.innerHeight - buttonHeight;
-
-  const randomX = Math.max(0, Math.random() * maxX);
-  const randomY = Math.max(0, Math.random() * maxY);
-
-  noButton.style.left = `${randomX}px`;
-  noButton.style.top = `${randomY}px`;
-  noButton.style.transform = `scale(${scale})`;
-}
-
-function handleYesClick() {
+// Nút đồng ý
+yesButton.addEventListener("click", function () {
   titleElement.innerHTML =
-    "Anh cảm ơn bé iuuu nhìu nhắmmm 💗<br>" +
-    "Anh hứa hongg làm em buồn nữa đouuu:33 💕";
+    "Anh cảm ơn bé iuuu nhìu lắmmm 💗<br>" +
+    "Anh hứa hongg làm em buồn nữa đouuu 🥹💕";
 
   buttonsContainer.classList.add("hidden");
   noButton.style.display = "none";
 
   changeImage("yes");
-
   document.body.classList.add("accepted");
-}
+});
 
+// Đổi ảnh mèo
 function changeImage(image) {
   catImg.src = `img/cat-${image}.jpg`;
 }
+
+// Chờ trang tải xong rồi đặt vị trí nút
+window.addEventListener("load", setupNoButton);
