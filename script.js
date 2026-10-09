@@ -82,8 +82,8 @@ function moveNoButtonRandom(scale) {
 
 function handleYesClick() {
   titleElement.innerHTML =
-    "Anh cảm ơn bé iuuu nhìu lắmmm 💗<br>" +
-    "Anh hứa hongg làm em buồn nữa đouuu 🥹💕";
+    "Anh cảm ơn bé iuuu nhìu nhắmmm 💗<br>" +
+    "Anh hứa hongg làm em buồn nữa đouuu:33 💕";
 
   buttonsContainer.classList.add("hidden");
   noButton.style.display = "none";
