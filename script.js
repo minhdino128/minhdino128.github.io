@@ -1,4 +1,3 @@
-
 "use strict";
 
 const titleElement = document.querySelector(".title");
@@ -9,7 +8,6 @@ const catImg = document.querySelector(".cat-img");
 
 const MAX_IMAGES = 5;
 
-// CÂU NÓI CỦA NÚT TỪ CHỐI
 const messages = [
   "Không Bao Giờ 😤",
   "Anh bicc lỗi rồi ạa 🥺",
@@ -38,16 +36,13 @@ let noCount = 0;
 yesButton.addEventListener("click", handleYesClick);
 
 noButton.addEventListener("click", function () {
-
   noCount++;
 
-  // Tiến trình từ 0 đến 1
   const progress = Math.min(
     noCount / (messages.length - 1),
     1
   );
 
-  // Ảnh mèo thay đổi
   const imageIndex = Math.min(
     Math.ceil(noCount / 4),
     MAX_IMAGES
@@ -55,52 +50,49 @@ noButton.addEventListener("click", function () {
 
   changeImage(imageIndex);
 
-  // Nút đồng ý lớn dần
+  // Nút đồng ý to dần
   const yesScale = 1 + progress * 5;
+  yesButton.style.transform = `scale(${yesScale})`;
 
-  yesButton.style.transform =
-    `scale(${yesScale})`;
+  // Nút từ chối nhỏ dần nhưng không biến mất
+  const noScale = Math.max(0.03, 1 - progress * 0.97);
 
-  // Nút từ chối nhỏ dần
-  // Nhỏ nhất 3%, không biến mất
-  const noScale = Math.max(
-    0.03,
-    1 - progress * 0.97
-  );
-
-  noButton.style.transform =
-    `scale(${noScale})`;
-
-  // Thay câu nói
+  // Đổi câu chữ
   noButton.textContent =
     messages[Math.min(noCount, messages.length - 1)];
 
-  // Nút từ chối luôn nằm trên nút đồng ý
-  // Để vẫn có thể bấm khi nó rất nhỏ
-  noButton.style.zIndex = "20";
-  yesButton.style.zIndex = "10";
-
-  // Không khóa nút từ chối
-  // Không đặt opacity = 0
-  // Không đặt display = none
-
+  // Cho nút từ chối nhảy lung tung
+  moveNoButtonRandom(noScale);
 });
 
-// KHI NHẤN ĐỒNG Ý
-function handleYesClick() {
+function moveNoButtonRandom(scale) {
+  const buttonWidth = noButton.offsetWidth;
+  const buttonHeight = noButton.offsetHeight;
 
+  const maxX = window.innerWidth - buttonWidth;
+  const maxY = window.innerHeight - buttonHeight;
+
+  const randomX = Math.max(0, Math.random() * maxX);
+  const randomY = Math.max(0, Math.random() * maxY);
+
+  noButton.style.left = `${randomX}px`;
+  noButton.style.top = `${randomY}px`;
+  noButton.style.transform = `scale(${scale})`;
+}
+
+function handleYesClick() {
   titleElement.innerHTML =
     "Anh cảm ơn bé iuuu nhìu lắmmm 💗<br>" +
     "Anh hứa hongg làm em buồn nữa đouuu 🥹💕";
 
   buttonsContainer.classList.add("hidden");
+  noButton.style.display = "none";
 
   changeImage("yes");
 
   document.body.classList.add("accepted");
 }
 
-// ĐỔI ẢNH MÈO
 function changeImage(image) {
   catImg.src = `img/cat-${image}.jpg`;
 }
