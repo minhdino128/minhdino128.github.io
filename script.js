@@ -9,48 +9,45 @@ const catImg = document.querySelector(".cat-img");
 
 const MAX_IMAGES = 5;
 
-// Những câu xin lỗi
+// CÂU NÓI CỦA NÚT TỪ CHỐI
 const messages = [
-  "Không bao giờ 😤",
-  "Anh bicc lỗi rồi ạaa 🥺",
-  "Mong em tha lỗi cho anh :((",
+  "Không Bao Giờ 😤",
+  "Anh bicc lỗi rồi ạa 🥺",
+  "Mong em tha lỗi choo Anh :((",
   "Anh saii rồi, anh đáng trách ạ 😭",
-  "Em đừng giận anh nữa nhooo 🥹",
+  "Em đừng giận Anh nữa nhoo 🥹",
   "Anh iu em nhắm nhunnn đóoooo 💗",
   "Anh hứa sẽ ngoan hơn màaa 🧸",
-  "Đừng giận anh nữa màaa 😭",
-  "Cho anh một cơ hội nữa nha 💖",
-  "Anh hứa hong làm em buồn nữa 🥺",
-  "Anh sẽ nghe lời em màaa 🌷",
-  "Em là công chúa của anh đó 👑",
-  "Anh xin lỗiii bé iuuu 😭",
-  "Tha lỗi cho anh đi màaa 💗",
-  "Anh iu em nhìu nhìu lắmmm 🥹",
-  "Bé ơi đừng giận anh nữa 💞",
-  "Anh biết anh sai rồiii 🥺",
+  "Bé iuuu đừng giận anh nữa 😭",
+  "Cho anh một cơ hội nhaaa 💖",
+  "Anh hong dám làm em buồn nữa 🥺",
+  "Anh sẽ nghe lời em màaaa 🌷",
+  "Anh xin lỗiii công chúa của anh 👑",
+  "Anh thương em nhìu lắmmm 💕",
+  "Em là cả thế giới của anh đóoo 🥹",
+  "Đừng giận anh nữa màaaa 😭",
+  "Anh biết lỗi thật rồi ạaa 💗",
   "Anh chỉ muốn em vui thôiii 🌸",
-  "Bấm nút hồng tha lỗi đi mà 💝",
-  "Anh xin lỗi công chúa của anh 💗"
+  "Bấm nút tha lỗi đi bé iuuu 💝",
+  "Anh xin lỗi nhìu nhìu lắm 🥺",
+  "Tha lỗi cho anh nhaaa 💗"
 ];
 
 let noCount = 0;
-let finished = false;
 
-// Nút đồng ý
 yesButton.addEventListener("click", handleYesClick);
 
-// Nút từ chối
 noButton.addEventListener("click", function () {
-  if (finished) return;
 
   noCount++;
 
+  // Tiến trình từ 0 đến 1
   const progress = Math.min(
     noCount / (messages.length - 1),
     1
   );
 
-  // Thay ảnh mèo
+  // Ảnh mèo thay đổi
   const imageIndex = Math.min(
     Math.ceil(noCount / 4),
     MAX_IMAGES
@@ -58,50 +55,43 @@ noButton.addEventListener("click", function () {
 
   changeImage(imageIndex);
 
-  // Nút chấp nhận phóng to dần
+  // Nút đồng ý lớn dần
   const yesScale = 1 + progress * 5;
 
   yesButton.style.transform =
     `scale(${yesScale})`;
 
   // Nút từ chối nhỏ dần
+  // Nhỏ nhất 3%, không biến mất
   const noScale = Math.max(
-    0.01,
-    1 - progress * 0.99
+    0.03,
+    1 - progress * 0.97
   );
 
   noButton.style.transform =
     `scale(${noScale})`;
 
-  // Thay câu nói trên nút
+  // Thay câu nói
   noButton.textContent =
     messages[Math.min(noCount, messages.length - 1)];
 
-  // Giữ nút chấp nhận ở phía trước
+  // Nút từ chối luôn nằm trên nút đồng ý
+  // Để vẫn có thể bấm khi nó rất nhỏ
+  noButton.style.zIndex = "20";
   yesButton.style.zIndex = "10";
-  noButton.style.zIndex = "1";
 
-  // Khi nút từ chối nhỏ nhất
-  if (progress >= 1) {
-    finished = true;
+  // Không khóa nút từ chối
+  // Không đặt opacity = 0
+  // Không đặt display = none
 
-    noButton.classList.add("tiny");
-
-    // Vẫn hiện nhưng không bấm được
-    noButton.disabled = true;
-    noButton.style.pointerEvents = "none";
-    noButton.style.opacity = "1";
-
-    yesButton.textContent =
-      "Tha lỗi cho anh nhaaa 🥹💗";
-  }
 });
 
-// Khi nhấn tha lỗi
+// KHI NHẤN ĐỒNG Ý
 function handleYesClick() {
+
   titleElement.innerHTML =
     "Anh cảm ơn bé iuuu nhìu lắmmm 💗<br>" +
-    "Anh hứa sẽ thương em và hong làm em buồn nữa đouuu 🥹💕";
+    "Anh hứa hongg làm em buồn nữa đouuu 🥹💕";
 
   buttonsContainer.classList.add("hidden");
 
@@ -110,7 +100,7 @@ function handleYesClick() {
   document.body.classList.add("accepted");
 }
 
-// Đổi hình mèo
+// ĐỔI ẢNH MÈO
 function changeImage(image) {
   catImg.src = `img/cat-${image}.jpg`;
 }
