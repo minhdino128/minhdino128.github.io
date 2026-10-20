@@ -350,3 +350,19 @@ body.draw-mode #drawLayer{visibility:visible;opacity:1;pointer-events:auto}
 .scene:not(.on){visibility:hidden!important;pointer-events:none!important}
 .scene:not(.on) *{pointer-events:none!important}
 .scene.on{visibility:visible}
+
+/* Sửa triệt để vùng nhấn của hai nút trả lời trên điện thoại */
+#sc-question.on { z-index:40; pointer-events:auto!important; }
+#sc-question.on .qbtns { position:relative; z-index:41; pointer-events:auto!important; }
+#sc-question.on button { position:relative; z-index:42; pointer-events:auto!important; touch-action:manipulation; cursor:pointer; }
+#sc-final:not(.on) { display:none!important; }
+body.draw-mode #stage { visibility:hidden!important; pointer-events:none!important; }
+body.draw-mode #sc-question, body.draw-mode #sc-final { display:none!important; }
+body.draw-mode #drawLayer { z-index:80; visibility:visible; opacity:1; pointer-events:auto; }
+/* Bảo đảm nút bị ẩn không nhận cú chạm xuyên qua trên Safari iOS */
+.scene:not(.on),.scene:not(.on) button { pointer-events:none!important; }
+@media (max-width:640px), (pointer:coarse) {
+ #sc-question.on { z-index:70; }
+ #sc-question.on .qbtns { z-index:71; }
+ #sc-question.on .qbtns button { z-index:72; min-height:46px; }
+}

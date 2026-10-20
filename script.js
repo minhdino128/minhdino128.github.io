@@ -57,7 +57,7 @@ let fxS={petals:0,hearts:0,lantern:0,fire:0,meteor:1,meadow:.6};
 
 /* Điện thoại: chạm trả lời là đến thẳng bốc thẻ.
    sessionStorage giúp không bị quay lại màn đầu nếu Safari/Chrome mobile tự tải lại. */
-const MOBILE_STAGE_KEY='dino-2010-mobile-stage-v2';
+const MOBILE_STAGE_KEY='dino-2010-mobile-stage-v3';
 const isPhone=()=>window.matchMedia('(pointer:coarse)').matches || window.innerWidth<=640;
 function rememberStage(value){
   try{ if(isPhone()) sessionStorage.setItem(MOBILE_STAGE_KEY,value); }catch(_){ }
@@ -70,6 +70,9 @@ function openGiftCards(options={}){
   waiting=true;
   rememberStage('draw');
   document.body.classList.add('draw-mode');
+  // Đóng hoàn toàn câu hỏi và các vùng bấm của màn lời chúc khi mở quà.
+  $('#q1').classList.remove('on');
+  $('#sc-question').classList.remove('on');
   document.querySelector('#drawLayer').setAttribute('aria-hidden','false');
   document.querySelector('#start').classList.add('gone');
   fxS={petals:.8,hearts:1,lantern:0,fire:.35,meteor:.35,meadow:.6};
@@ -149,23 +152,16 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{ if(started&&(e.key===' '||e.key==='ArrowRight')&&e.target.tagName!=='INPUT'){e.preventDefault();next();} });
 
 $('#q1').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b||!waiting) return;
-  waiting=false; $('#q1').classList.remove('on');
-  mood('happy'); talk(true);
-  if(b.dataset.a==='yes'){
-    say('giỏi quá! cứ khen thật nhiều vào nhé — em xứng đáng mà');
-  } else {
-    say('vậy để anh khen em nhé: em <em>mạnh mẽ</em> hơn em nghĩ, <em>dịu dàng</em> hơn em tưởng, và đáng được thương thật nhiều');
-  }
+  const btn=e.target.closest('button[data-a]');
+  if(!btn || idx!==S.findIndex(st=>st.scene==='question') || document.body.classList.contains('draw-mode')) return;
+  // Ngăn click trên iPhone nổi bọt tới các phần tử nằm bên dưới.
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
   clearTimeout(timer);
-  if(isPhone()){
-    // Không chuyển sang cảnh mở thư cuối rồi mới bốc: đi trực tiếp tới 3 thẻ.
-    // Lưu trạng thái ngay trước khi chuyển phòng khi điện thoại giải phóng tab.
-    rememberStage('draw');
-    timer=setTimeout(()=>openGiftCards(),1100);
-  }else{
-    timer=setTimeout(()=>go(idx+1),snap(4.4*BAR));
-  }
+  waiting=true;
+  rememberStage('draw');
+  openGiftCards(); // Bấm "Rồi nè" hoặc "Chưa nữa" sẽ thấy 3 thẻ NGAY.
 });
 
 function setupFinal(){
@@ -184,7 +180,12 @@ function replayIntro(){
   if(curScene){curScene.classList.remove('on'); curScene=null;}
   setTimeout(()=>go(0),300);
 }
-$('#b-replay').addEventListener('click',replayIntro);
+$('#b-replay').addEventListener('click',e=>{
+  if(idx!==S.length-1 || document.body.classList.contains('draw-mode') || !$('#sc-final').classList.contains('on')){
+    e.preventDefault();e.stopPropagation();return;
+  }
+  replayIntro();
+});
 // Nút "Xem lại lời chúc" trong màn thẻ cũng dùng chung hàm này.
 window.dinoReplayIntro=replayIntro;
 
@@ -325,7 +326,7 @@ if(savedStage()==='draw'){
   const cards=[...document.querySelectorAll('#prizeCards .gift-card')];
   const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   let picked=false, timers=[];
-  const CHOICE_KEY='dino-2010-mobile-choice-v2';
+  const CHOICE_KEY='dino-2010-mobile-choice-v3';
   const money=n=>n.toLocaleString('vi-VN')+'đ';
   function storeChoice(index,values){
     try{if(window.matchMedia('(pointer:coarse)').matches || innerWidth<=640)
@@ -393,9 +394,7 @@ if(savedStage()==='draw'){
   }
   cards.forEach((card,i)=>card.addEventListener('click',()=>choose(i)));
   restoreChoice();
-  $('revisitIntro').addEventListener('click',()=>{
-    if(typeof window.dinoReplayIntro==='function') window.dinoReplayIntro();
-  });
+  // Không gắn chức năng quay về đầu ở màn bốc thẻ.
   $('shareResult').addEventListener('click',async()=>{
     const msg='Anh ơiii 💗 Em vừa bốc thăm quà 20/10 và được 200.000đ nè! Nhớ tặng quà em đó nhaaa 🥹🎁';
     if(navigator.share){try{await navigator.share({title:'Quà 20/10 của em 💗',text:msg});return;}catch(e){if(e.name==='AbortError')return;}}
