@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Học C++ từ cơ bản đến nâng cao và mô phỏng từng dòng code trực quan bằng tiếng Việt." />
+  <title>C++ Vision · Học lập trình bằng mắt</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-icon">C<span>++</span></div><div><strong>VISION<span class="brand-dot">.</span></strong><small>HỌC CODE BẰNG MẮT</small></div></div>
+      <div class="top-center"><span class="live-dot"></span> TRÌNH MÔ PHỎNG TƯƠNG TÁC <span class="top-sep">/</span> <span class="text-mute">100% trên trình duyệt</span></div>
+      <div class="top-actions"><button class="btn subtle mobile-toggle" id="menuBtn" aria-label="Mở khóa học">☰ Khóa học</button><button class="btn subtle" id="themeBtn" title="Đổi giao diện">☀ <span class="hide-mobile">Giao diện</span></button><button class="btn gradient-btn" id="helpBtn">? <span class="hide-mobile">Hướng dẫn</span></button></div>
+    </header>
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head"><div class="eyebrow">KHÁM PHÁ KIẾN THỨC</div><h2>Hành trình C++ <span>✦</span></h2><div class="progress-heading"><span>Tiến độ học tập</span><b id="progressText">0 / 0</b></div><div class="progress-track"><div id="progressFill"></div></div></div>
+        <div class="search-wrap"><span>⌕</span><input id="searchLessons" placeholder="Tìm bài học..." autocomplete="off" /></div>
+        <nav id="lessonNav" aria-label="Lộ trình bài học"></nav>
+        <div class="sidebar-bottom"><div class="small-bolt">✧</div><div><strong>Học theo cách của bạn</strong><p>Chọn bài → chạy mô phỏng → xem từng dòng → tự sửa code.</p></div></div>
+      </aside>
+      <main class="main-content">
+        <div class="hero-line"><span><span class="eyebrow">PHÒNG THÍ NGHIỆM TƯƠNG TÁC</span><span class="breadcrumb"> / <span id="breadcrumb">Nhập môn</span></span></span><span class="version-pill">BETA · OFFLINE</span></div>
+        <div class="lesson-intro"><div><span class="lesson-tag" id="lessonTag">BÀI 01 · CƠ BẢN</span><h1 id="lessonTitle">Code không còn là bí ẩn.</h1><p id="lessonDesc">Tự viết C++, xem biến thay đổi và hiểu chương trình chạy thế nào.</p></div><div class="intro-right"><button class="btn finish-btn" id="doneBtn">○ Đánh dấu đã học</button></div></div>
+        <section class="concept-strip" id="conceptStrip"><div class="concept-icon">💡</div><div><strong id="conceptTitle">Điều cần hiểu</strong><p id="conceptBody">Bấm vào từng dòng để xem giải thích.</p></div></section>
+        <section class="workspace">
+          <div class="workspace-top"><div class="workspace-label"><span class="terminal-mark">&lt;/&gt;</span><strong>Trình soạn thảo C++</strong><span class="file-chip">main.cpp</span></div><div class="editor-actions"><select id="exampleSelect" title="Chọn chương trình mẫu"></select><button class="text-btn" id="resetBtn" title="Khôi phục code bài học">↺ Khôi phục</button><button class="text-btn" id="copyBtn" title="Sao chép code">⧉ Sao chép</button></div></div>
+          <div class="editor-container" id="editorContainer"><div class="line-numbers" id="lineNumbers" aria-label="Số dòng code"></div><div class="editor-area"><div class="active-line-bg" id="activeLineBg"></div><textarea id="codeEditor" aria-label="Nhập hoặc dán chương trình C++" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" wrap="off"></textarea></div></div>
+          <div class="editor-hint"><span>◎ Rê chuột lên dòng code hoặc chạm số dòng để hiểu cách hoạt động</span><span id="editorCount">0 dòng</span></div>
+          <div class="input-bar"><div class="input-label"><span class="round-icon">⌨</span><div><strong>Dữ liệu nhập (stdin)</strong><small>Giống khi bạn gõ ở cửa sổ console</small></div></div><textarea id="stdinInput" spellcheck="false" aria-label="Dữ liệu nhập chương trình" placeholder="Ví dụ: 5 10" rows="2"></textarea><button class="btn ghost-btn" id="inputExampleBtn">Test mẫu</button></div>
+          <div class="control-bar"><div class="control-primary"><button class="btn run-btn" id="buildBtn"><span>▶</span> Phân tích & mô phỏng</button><button class="btn outlined-btn" id="prevBtn" title="Bước trước" disabled>‹</button><button class="btn outlined-btn" id="nextBtn" title="Bước tiếp theo" disabled>› <span class="hide-mobile">Từng bước</span></button><button class="btn outlined-btn" id="playBtn" title="Tự động phát" disabled>▷ <span class="hide-mobile">Phát</span></button></div><div class="control-end"><label for="speedInput">Tốc độ</label><input type="range" id="speedInput" min="1" max="5" value="3"/><span id="speedText">1×</span><button class="btn subtle icon-only" id="rewindBtn" title="Về bước đầu">↺</button></div></div>
+          <div class="simulation-status" id="simulationStatus"><span class="status-dot"></span><span id="simulationMessage">Sẵn sàng. Nhấn “Phân tích & mô phỏng” để bắt đầu.</span><strong id="stepCounter">0 / 0</strong></div>
+          <div class="progress-scrubber"><input id="stepSlider" type="range" min="0" max="0" value="0" disabled aria-label="Thanh tiến trình mô phỏng" /></div>
+        </section>
+        <div class="lower-grid">
+          <section class="panel output-panel"><div class="panel-heading"><span><span class="panel-icon">▣</span> Console / Kết quả</span><button class="text-btn" id="clearOutputBtn">Xóa kết quả</button></div><pre id="consoleOutput" class="console-text"><span class="console-placeholder">Đầu ra của chương trình sẽ xuất hiện tại đây...</span></pre><div class="console-footer"><span class="terminal-green">●</span><span id="consoleFootText">Chưa chạy</span></div></section>
+          <section class="panel timeline-panel"><div class="panel-heading"><span><span class="panel-icon">≡</span> Nhật ký thực thi</span><span class="tiny-label">BẤM ĐỂ TUA TỚI BƯỚC</span></div><div id="timeline" class="timeline"><div class="empty-timeline">Các bước chạy sẽ hiển thị tại đây.</div></div></section>
+        </div>
+        <section class="panel knowledge-panel"><div class="panel-heading"><span><span class="panel-icon">◇</span> Nắm chắc kiến thức</span><span class="tiny-label">GIẢI THÍCH DỄ HIỂU</span></div><div id="knowledgeBody"></div><div id="quizBox"></div></section>
+        <footer class="main-footer">C++ Vision · Học bản chất, không học vẹt. <span>Chạy mô phỏng một tập con C++ — không phải trình biên dịch C++ đầy đủ.</span></footer>
+      </main>
+      <aside class="inspector"><div class="inspector-sticky"><div class="inspector-title"><span class="inspector-gem">✳</span><span>GIẢI MÃ TỪNG DÒNG</span><span class="inspect-chip">LIVE</span></div><section class="inspect-box"><div class="panel-mini-head">ĐANG KHÁM PHÁ <span id="focusLineBadge">DÒNG —</span></div><div class="focused-code" id="focusedCode">Di chuột qua code để bắt đầu.</div><div class="explain-icon">✦ <span>GIẢI THÍCH TIẾNG VIỆT</span></div><h3 id="explainTitle">Một dòng code làm gì?</h3><p id="explainText">Chọn một bài học và di chuột vào dòng code. Khi mô phỏng, bạn sẽ thấy dòng nào đang chạy và tác động của nó.</p><div id="explainDetail" class="explain-detail"></div></section>
+        <section class="memory-section"><div class="section-heading"><span>▦ Bộ nhớ & biến</span><span id="memoryCount">0 biến</span></div><div class="memory-body" id="memoryBody"><div class="empty-state"><span>▤</span><p>Biến xuất hiện ở đây khi chương trình chạy.</p></div></div></section>
+        <section class="flow-section"><div class="section-heading"><span>⇢ Sơ đồ luồng chạy</span><span id="flowState">CHỜ</span></div><div class="flow-diagram"><div class="flow-node" id="flowBefore">Bắt đầu</div><div class="flow-arrow">↓</div><div class="flow-node center-node" id="flowCurrent">Chưa có bước thực thi</div><div class="flow-arrow">↓</div><div class="flow-node" id="flowAfter">Chọn chạy mô phỏng</div></div><div class="decision-box" id="decisionBox" hidden></div></section>
+        <section class="support-note"><strong>⚡ Mô phỏng có giới hạn</strong><p>Hỗ trợ nhập xuất, biến, biểu thức, if/else, vòng lặp, mảng, vector và thuật toán cơ bản. Đã mô phỏng được cả hàm và đệ quy cơ bản. Con trỏ, class, map và thư viện C++ phức tạp cần trình biên dịch/trình gỡ lỗi thực.</p></section></div></aside>
+    </div>
+  </div>
+  <div class="overlay" id="mobileOverlay" hidden></div>
+  <dialog id="helpDialog"><div class="modal-head"><h2>Chào mừng đến C++ Vision ✨</h2><button id="closeHelpBtn" aria-label="Đóng">✕</button></div><p>Trang web giúp bạn <b>nhìn thấy</b> code thực thi thay vì chỉ đọc lý thuyết.</p><ol><li><b>Chọn bài học</b> ở thanh bên hoặc dán code C++ của bạn vào ô soạn thảo.</li><li>Nhập số kiểm thử ở mục <b>Dữ liệu nhập</b>, ví dụ <code>5 10</code>.</li><li>Bấm <b>Phân tích & mô phỏng</b>, rồi bấm <b>Từng bước</b> để thấy giá trị biến và đầu ra thay đổi.</li><li><b>Di chuột qua một dòng</b> hoặc chạm vào số dòng trên điện thoại để xem giải thích của dòng đó.</li></ol><p class="modal-warning"><b>Lưu ý:</b> Đây là trình <b>mô phỏng để học</b>, không phải compiler C++ thật. Mỗi câu lệnh nên để trên một dòng. Các cú pháp chưa hỗ trợ sẽ báo lỗi, không tự đoán đầu ra.</p><button class="btn gradient-btn" id="startHelpBtn">Bắt đầu khám phá →</button></dialog>
+  <script src="lessons.js"></script><script src="simulator.js"></script><script src="app.js"></script>
+</body>
+</html>
